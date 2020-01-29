@@ -105,11 +105,18 @@ def text_to_number(m):
 
     return result
 
+number_array = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
+
+def parse_integer_as_words(n):
+    digits = map(int, [c for c in str(n)])
+    normalized_digits = map(lambda d: number_array[d], digits)
+    return ' '.join(normalized_digits)
+
+assert parse_integer_as_words(10) == "one zero"
+
 
 number_conversions = {"oh": "0"}  # 'oh' => zero
-for i, w in enumerate(
-    ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
-):
+for i, w in enumerate(number_array):
     number_conversions[str(i)] = str(i)
     number_conversions[w] = str(i)
     number_conversions["%s\\number" % (w)] = str(i)

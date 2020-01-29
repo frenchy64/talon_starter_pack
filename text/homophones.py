@@ -2,7 +2,7 @@ from talon import app, clip, cron
 from talon.voice import Context, Str, press
 from talon.webview import Webview
 
-from ..utils import parse_word
+from ..utils import parse_word, parse_integer_as_words, parse_words_as_integer
 import os
 
 ########################################################################
@@ -118,10 +118,7 @@ def make_selection(m, is_selection, transform=lambda x: x):
     cron.after("0s", close_homophones)
     words = m._words
     d = None
-    if len(words) == 1:
-        d = int(parse_word(words[0]))
-    else:
-        d = int(parse_word(words[1]))
+    d = parse_words_as_integer(words)
     w = active_word_list[d - 1]
     if len(words) > 1:
         w = transform(w)
@@ -203,28 +200,28 @@ def raise_homophones(m, force_raise=False, is_selection=False):
 
     keymap.update(
         {
-            "[pick] %s" % (i + 1): lambda m: make_selection(m, is_selection)
+            "[pick] %s" % parse_integer_as_words(i + 1): lambda m: make_selection(m, is_selection)
             for i in valid_indices
         }
     )
     keymap.update(
         {
             "(ship | title) %s"
-            % (i + 1): lambda m: make_selection(m, is_selection, capitalize)
+            % parse_integer_as_words(i + 1): lambda m: make_selection(m, is_selection, capitalize)
             for i in valid_indices
         }
     )
     keymap.update(
         {
             "(yeller | upper | uppercase) %s"
-            % (i + 1): lambda m: make_selection(m, is_selection, uppercase)
+            % parse_integer_as_words(i + 1): lambda m: make_selection(m, is_selection, uppercase)
             for i in valid_indices
         }
     )
     keymap.update(
         {
             "(lower | lowercase) %s"
-            % (i + 1): lambda m: make_selection(m, is_selection, lowercase)
+            % parse_integer_as_words(i + 1): lambda m: make_selection(m, is_selection, lowercase)
             for i in valid_indices
         }
     )
